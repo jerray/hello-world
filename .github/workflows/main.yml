@@ -1,0 +1,27 @@
+name: Main
+on:
+  - push
+  - create
+jobs:
+  Build:
+    name: Build Job
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - id: publish
+      name: Publish
+      uses: jerray/publish-docker-action@master
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: jerray/hello-world
+        auto_tag: true
+
+    - name: Verify
+      env:
+        IMAGE_NAME: ${{ steps.publish.outputs.tag }}
+      run: |
+        echo $IMAGE_NAME
+
